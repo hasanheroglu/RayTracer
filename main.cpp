@@ -1,7 +1,9 @@
 #include <iostream>
 #include "vector3.h"
+#include "matrix4.h"
 
 typedef Vec3<float> Vec3f;
+typedef Mat4<float> Mat4f;
 
 int main()
 {
@@ -24,5 +26,16 @@ int main()
     v5.normalize().print();
     std::cout<<"v5 norm: "<<v5.norm()<<std::endl;
 
-    std::cout<<"hello world"<<std::endl;
+    Mat4f m1(5.0f);
+    m1.print();
+    Mat4f m2(1.0f, 2.0f, 3.0f, 4.0f,
+             1.0f, 2.0f, 3.0f, 4.0f,
+             1.0f, 2.0f, 3.0f, 4.0f,
+             1.0f, 2.0f, 3.0f, 4.0f);
+    m2.print();
+    m2.transpose().print();
+
+    (m1+m2).print();
+    Mat4f m3;
+    (m1*m2).print(); 
 }
