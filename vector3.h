@@ -8,6 +8,7 @@ class Vec3
         Vec3(): x(T(0)), y(T(0)), z(T(0)){};
         Vec3(T v): x(v), y(v), z(v){};
         Vec3(T x, T y, T z): x(x), y(y), z(z){};
+        T dot(const Vec3<T> &v){ return x*v.x + y*v.y + z*v.z; }
         Vec3<T> operator +(const Vec3<T> &v){ return Vec3<T>(x+v.x, y+v.y, z+v.z); }
         Vec3<T>& operator +=(const Vec3<T> &v){ x+=v.x; y+=v.y; z+=v.z; return *this; }
         Vec3<T> operator -(){ return Vec3<T>(-x, -y, -z); }
