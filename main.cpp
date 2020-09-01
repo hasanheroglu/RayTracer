@@ -28,14 +28,17 @@ int main()
 
     Mat4f m1(5.0f);
     m1.print();
-    Mat4f m2(1.0f, 2.0f, 3.0f, 4.0f,
-             1.0f, 2.0f, 3.0f, 4.0f,
-             1.0f, 2.0f, 3.0f, 4.0f,
-             1.0f, 2.0f, 3.0f, 4.0f);
-    m2.print();
-    m2.transpose().print();
+    Mat4f m2(0.0f, 2.0f, 3.0f, 4.0f,
+             2.0f, 6.0f, 7.0f, 8.0f,
+             4.0f, 5.0f, 3.0f, 2.0f,
+             0.0f, 1.0f, 2.0f, 3.0f);
+        
+    Mat4f m3(3.0f);
 
-    (m1+m2).print();
-    Mat4f m3;
-    (m1*m2).print(); 
+    (m3*3).print();
+    (m1-m3).print();
+    m1 -= m2;
+    m1.print();
+    m1 += m2;
+    m1.print();
 }
