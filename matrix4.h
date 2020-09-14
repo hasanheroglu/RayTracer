@@ -2,6 +2,9 @@
 
 #define MATRIX_SIZE 16
 
+#ifndef MATRIX4_H
+#define MATRIX4_H
+
 template <typename T>
 class Mat4
 {
@@ -251,3 +254,7 @@ class Mat4
             }
         }
 };
+
+typedef Mat4<float> Mat4f;
+
+#endif

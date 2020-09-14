@@ -1,18 +1,43 @@
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include "vector3.h"
 #include "matrix4.h"
+#include "triangle.h"
 
-typedef Vec3<float> Vec3f;
-typedef Mat4<float> Mat4f;
+#define WIDTH 640
+#define HEIGHT 480
 
 int main()
 {
-    Vec3f v1(1.2f, 1.6f, 1.8f);
-    Vec3f v2;
-    Vec3f v3(5.1f);
-    
-    printf("v1 dot v2 = %f\nv1 dot v3 =  %f\n", v1.dot(v2), v1.dot(v3));
 
+    Vec3f origin(0.0f, 0.0f, 0.8f);
+    Vec3f p1(-1.0f, 01.0f, 1.0f);
+    Vec3f p2(1.0f, 1.0f, 1.0f);
+    Vec3f p3(0.5f, 0.0f, 1.0f);
+    Vec3f color(0.0f, 1.0f, 0.0f);
 
+    Triangle *triangle = new Triangle(p1, p2, p3, color);
+
+    std::ofstream img("picture.ppm");
+    img << "P3" << std::endl;
+    img << WIDTH << " " << HEIGHT << std::endl;
+    img << "255" << std::endl;
+
+    for(int x=-HEIGHT/2; x<HEIGHT/2; x++)
+    {
+        for(int y=-WIDTH/2; y<WIDTH/2; y++)
+        {
+            Ray ray(origin, (Vec3f((float)y/(WIDTH/2), (float)x/(HEIGHT/2), 1.0f) - origin).normalize());
+
+            if(triangle->intersects(ray))
+            {
+                img << (int) (triangle->getColor().x * 255)  << " " << (int) (triangle->getColor().y * 255) << " " << (int) (triangle->getColor().z * 255)  << std::endl;
+            } 
+            else
+            {
+                img << 0 << " " << 0 << " " << 0 << std::endl;
+            }
+        }
+    }
 }
