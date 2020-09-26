@@ -21,20 +21,23 @@ class Triangle
         float getMaxY(){ return std::max(p1.y, std::max(p2.y, p3.y)); } 
         float getMaxZ(){ return std::max(p1.z, std::max(p2.z, p3.z)); }
         float getPlaneConstant(){ return -p1.dot(getNormal()); }
-        bool intersects(Ray ray)
+        bool intersects(Ray ray, float &zPoint)
         {
             float lambda = -(ray.getOrigin().dot(getNormal()) + getPlaneConstant())/(ray.getDirection().dot(getNormal()));
             if(lambda < 0) return false;
 
             Vec3f intersectionPoint = ray.getOrigin() + ray.getDirection()*lambda;
+            zPoint = intersectionPoint.z;
             if(intersectionPoint.x > getMaxX() || intersectionPoint.x < getMinX()) return false;
             if(intersectionPoint.y > getMaxY() || intersectionPoint.y < getMinY()) return false;
             if(intersectionPoint.z > getMaxZ() || intersectionPoint.z < getMinZ()) return false;
+            /*
             printf("Direction:\n");
             ray.getDirection().print();
             printf("Intersection Point:\n");
             intersectionPoint.print();
             printf("\n");
+            */
 
             Vec3f v = p2-p3;
             Vec3f a = v.cross(intersectionPoint - p3);
