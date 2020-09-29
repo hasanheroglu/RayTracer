@@ -2,11 +2,12 @@
 #include <cmath>
 #include "vector3.h"
 #include "ray.h"
+#include "raytracable.h"
 
 #ifndef SPHERE_H
 #define SPHERE_H
 
-class Sphere
+class Sphere : public Raytracable
 {
     public:
         Sphere(): center(Vec3f(0.0f)), radius(1.0f), color(Vec3f(1.0f)){};
@@ -14,7 +15,7 @@ class Sphere
         Vec3f getCenter(){ return center; }
         Vec3f getColor(){ return color; }
         float getRadius(){ return radius; }
-        bool intersects(Ray ray, float &zPoint)
+        bool intersects(Ray ray, float near, float far, float &zPoint)
         {
             //line-sphere intersection equation variable calculations
             float a = ray.getDirection().norm2();
@@ -36,7 +37,7 @@ class Sphere
             }
 
             //sphere is behind the camera
-            if(distance<0){ return false; }
+            if(distance<near || distance>=far){ return false; }
 
             Vec3f intersectionPoint = ray.getOrigin() + ray.getDirection()*distance;
             zPoint = intersectionPoint.z;

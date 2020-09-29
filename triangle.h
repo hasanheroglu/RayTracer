@@ -2,11 +2,12 @@
 #include <algorithm>
 #include "vector3.h"
 #include "ray.h"
+#include "raytracable.h"
 
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
-class Triangle
+class Triangle: public Raytracable
 {
     public:
         Triangle(){ p1 = Vec3f(); p2 = Vec3f(); p3 = Vec3f(); color = Vec3f(); }
@@ -21,24 +22,23 @@ class Triangle
         float getMaxY(){ return std::max(p1.y, std::max(p2.y, p3.y)); } 
         float getMaxZ(){ return std::max(p1.z, std::max(p2.z, p3.z)); }
         float getPlaneConstant(){ return -p1.dot(getNormal()); }
-        bool intersects(Ray ray, float &zPoint)
+        bool intersects(Ray ray, float near, float far, float &zPoint)
         {
             float lambda = -(ray.getOrigin().dot(getNormal()) + getPlaneConstant())/(ray.getDirection().dot(getNormal()));
             if(lambda < 0) return false;
 
             Vec3f intersectionPoint = ray.getOrigin() + ray.getDirection()*lambda;
+            float distance = (intersectionPoint - ray.getOrigin()).norm();
+            if(distance<near || distance>=far) return false; 
+
             zPoint = intersectionPoint.z;
             if(intersectionPoint.x > getMaxX() || intersectionPoint.x < getMinX()) return false;
             if(intersectionPoint.y > getMaxY() || intersectionPoint.y < getMinY()) return false;
             if(intersectionPoint.z > getMaxZ() || intersectionPoint.z < getMinZ()) return false;
-            /*
-            printf("Direction:\n");
-            ray.getDirection().print();
-            printf("Intersection Point:\n");
-            intersectionPoint.print();
-            printf("\n");
-            */
 
+
+            //TO DO
+            //write a function for calculations below
             Vec3f v = p2-p3;
             Vec3f a = v.cross(intersectionPoint - p3);
             Vec3f b = v.cross(p1 - p3);
