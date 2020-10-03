@@ -15,7 +15,8 @@ class Sphere : public Raytracable
         Vec3f getCenter(){ return center; }
         Vec3f getColor(){ return color; }
         float getRadius(){ return radius; }
-        bool intersects(Ray ray, float near, float far, float &zPoint)
+        Vec3f getNormalForPoint(Vec3f point){ return (point-center).normalize(); }
+        IntersectionStatus intersects(Ray ray, float near, float far, Vec3f &iPoint)
         {
             //line-sphere intersection equation variable calculations
             float a = ray.getDirection().norm2();
@@ -24,7 +25,7 @@ class Sphere : public Raytracable
             float delta = pow(b,2) - 4*a*c;
             float distance;
 
-            if(delta<0){ return false; }
+            if(delta<0){ return IntersectionStatus::MISS; }
             else if(delta==0)
             {
                 distance = -b/(2*a); 
@@ -37,11 +38,12 @@ class Sphere : public Raytracable
             }
 
             //sphere is behind the camera
-            if(distance<near || distance>=far){ return false; }
+            if(distance<near || distance>=far){ return IntersectionStatus::MISS; }
+
 
             Vec3f intersectionPoint = ray.getOrigin() + ray.getDirection()*distance;
-            zPoint = intersectionPoint.z;
-            return true;
+            iPoint = intersectionPoint;
+            return IntersectionStatus::HIT;
         }
     private:
         Vec3f center, color;
