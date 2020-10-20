@@ -60,8 +60,8 @@ class Scene{
                                         float d = n.dot(l);
                                         if(d<0){ d=0; }
                                     
-                                        Vec3f diffuseColor = objects[i]->getColor()*lights[j]->getDiffuseCoefficient()*d;
-                                        Vec3f ambientColor = objects[i]->getColor()*lights[j]->getAmbientCoefficient();
+                                        Vec3f diffuseColor = objects[i]->getMaterial().getDiffuseColor()*lights[j]->getColor()*d;
+                                        Vec3f ambientColor = objects[i]->getMaterial().getAmbientColor()*lights[j]->getColor();
 
                                         Ray lightRay = Ray(lights[j]->getPosition(), (iPoint - lights[j]->getPosition()).normalize()); 
                                         Vec3f r = lightRay.getReflection(n);
@@ -69,7 +69,7 @@ class Scene{
                                         float s = v.normalize().dot(r.normalize());
                                         if(s<0){ s=0; }
 
-                                        Vec3f specularColor = objects[i]->getColor()*lights[j]->getSpecularCoefficient()*std::pow(s, 50);
+                                        Vec3f specularColor = objects[i]->getMaterial().getSpecularColor()*lights[j]->getSpecularCoefficient()*std::pow(s, objects[i]->getMaterial().getShininess());
                                         currentColor =  diffuseColor + ambientColor + specularColor;
                                         if(currentColor.x > 1) currentColor.x = 1.0f;
                                         if(currentColor.y > 1) currentColor.y = 1.0f;

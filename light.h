@@ -23,6 +23,7 @@ class Light
         float getAmbientCoefficient(){ return ambientCoefficient; }
         float getSpecularCoefficient(){ return specularCoefficient; }
         Vec3f getPosition(){ return position; }
+        Vec3f getColor(){ return color; }
         bool canSee(Vec3f point, std::vector<Raytracable*> &raytracables)
         {
             Ray ray(point, (position-point).normalize());
