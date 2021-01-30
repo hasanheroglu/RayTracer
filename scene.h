@@ -50,6 +50,7 @@ class Scene{
                     zBuffer[i][j]= 99999.0f;
                 }
             }
+
             std::ofstream img("picture.ppm");
             img << "P3" << std::endl;
             img << width << " " << height << std::endl;
@@ -79,41 +80,22 @@ class Scene{
                                     //Will not work with multiple lights colors will be overriden
                                     if(lights[j]->canSee(iPoint, objects))
                                     {
-                                        //normal
-                                        Vec3f n = objects[i]->getNormalForPoint(iPoint).normalize();
-                                        //direction to the light
-                                        Vec3f l = (lights[j]->getPosition()-iPoint).normalize();
-                                        float d = n.dot(l);
-                                        if(d<0){ d=0; }
-                                    
-                                        Vec3f diffuseColor = objects[i]->getMaterial().getDiffuseColor()*lights[j]->getColor()*d;
+                                        Vec3f diffuseColor = objects[i]->getMaterial().getDiffuseColor()*lights[j]->getColor()*getDiffuseColorCoefficient(objects[i], lights[j], iPoint);
                                         Vec3f ambientColor = objects[i]->getMaterial().getAmbientColor()*lights[j]->getColor();
-
-                                        Ray lightRay = Ray(lights[j]->getPosition(), (iPoint - lights[j]->getPosition()).normalize()); 
-                                        Vec3f r = lightRay.getReflection(n);
-                                        Vec3f v = (origin - iPoint);
-                                        float s = v.normalize().dot(r.normalize());
-                                        if(s<0){ s=0; }
-
-                                        Vec3f specularColor = objects[i]->getMaterial().getSpecularColor()*lights[j]->getSpecularCoefficient()*std::pow(s, objects[i]->getMaterial().getShininess());
+                                        Vec3f specularColor = objects[i]->getMaterial().getSpecularColor()*lights[j]->getSpecularCoefficient()*std::pow(getSpecularColorCoefficient(objects[i], lights[j], iPoint), objects[i]->getMaterial().getShininess());
                                         currentColor =  diffuseColor + ambientColor + specularColor;
-                                        if(currentColor.x > 1) currentColor.x = 1.0f;
-                                        if(currentColor.y > 1) currentColor.y = 1.0f;
-                                        if(currentColor.z > 1) currentColor.z = 1.0f;
                                     }
                                     else
                                     {
                                         Vec3f ambientColor = objects[i]->getColor()*lights[j]->getAmbientCoefficient();
                                         currentColor =  ambientColor;
-                                        if(currentColor.x > 1) currentColor.x = 1.0f;
-                                        if(currentColor.y > 1) currentColor.y = 1.0f;
-                                        if(currentColor.z > 1) currentColor.z = 1.0f;
                                     }
                                 }
                             }
                         } 
                     }
-
+                    
+                    clampColor(currentColor);
                     img << (int) (currentColor.x * 255)  << " " << (int) (currentColor.y * 255) << " " << (int) (currentColor.z * 255)  << std::endl;
                 }
             }
@@ -126,6 +108,35 @@ class Scene{
         std::vector<Light*> lights;
         //TODO: allow multiple cameras?
         Camera* camera;
+
+        void clampColor(Vec3f &color)
+        {
+            if(color.x > 1) color.x = 1.0f;
+            if(color.y > 1) color.y = 1.0f;
+            if(color.z > 1) color.z = 1.0f;
+        }
+
+        float getDiffuseColorCoefficient(Raytracable* raytracable, Light* light, Vec3f intersectionPoint)
+        {
+            //normal
+            Vec3f n = raytracable->getNormalForPoint(intersectionPoint).normalize();
+            //direction to the light
+            Vec3f l = (light->getPosition()-intersectionPoint).normalize();
+            float d = n.dot(l);
+            if(d<0){ d=0; }
+            return d;
+        }
+
+        float getSpecularColorCoefficient(Raytracable* raytracable, Light* light, Vec3f intersectionPoint)
+        {
+            Ray lightRay = Ray(light->getPosition(), (intersectionPoint - light->getPosition()).normalize()); 
+            Vec3f n = raytracable->getNormalForPoint(intersectionPoint).normalize();
+            Vec3f r = lightRay.getReflection(n);
+            Vec3f v = (camera->getOrigin() - intersectionPoint);
+            float s = v.normalize().dot(r.normalize());
+            if(s<0){ s=0; }
+            return s;
+        }
 };
 
 #endif 

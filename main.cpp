@@ -37,6 +37,11 @@ int main()
     Vec3f sColor3(0.1f, 0.2f, 0.6f);
     Sphere* sphere3 = new Sphere(center3, 0.7f, sColor3);
 
+    //Sphere 4 variables
+    Vec3f center4(-3.0f, 3.0f, 4.0f);
+    Vec3f sColor4(0.7f, 0.0f, 0.7f);
+    Sphere* sphere4 = new Sphere(center4, 1.0f, sColor2);
+
     //Triangle variables
     Vec3f p1(0.5f, 0.3f, 1.0f);
     Vec3f p2(-0.5f, 0.3f, 5.0f);
@@ -44,20 +49,29 @@ int main()
     Vec3f tColor(0.4f, 0.0f, 0.0f);
 
     //Light variables
-    Vec3f position(0.0f, 0.0f, 30.0f);
+    Vec3f position(0.0f, 0.0f, -30.0f);
     Vec3f direction(0.0f, -1.0f, 0.0f);
     Vec3f lColor(1.0f, 1.0f, 1.0f);
     Light* light1 = new Light(3.0f, 1.0f, 0.3f, 1.0f, position, direction, lColor);
 
     //Material 1 variables
-    Vec3f ambientColor(0.3f, 0.5f, 0.0f);
-    Vec3f diffuseColor(0.3f, 0.5f, 0.0f);
-    Vec3f specularColor(1.0f, 1.0f, 1.0f);
-    float shininess =  100.0f;
-    Material* material = new Material(ambientColor, diffuseColor, specularColor, shininess);
-    sphere1->setMaterial(*material);
-    sphere2->setMaterial(*material);
-    sphere3->setMaterial(*material);
+    Vec3f ambientColor1(0.3f, 0.5f, 0.0f);
+    Vec3f diffuseColor1(0.3f, 0.5f, 0.0f);
+    Vec3f specularColor1(1.0f, 1.0f, 1.0f);
+    float shininess1 =  100.0f;
+    Material* material1 = new Material(ambientColor1, diffuseColor1, specularColor1, shininess1);
+
+    //Material 2 variables
+    Vec3f ambientColor2(1.0f, 0.0f, 0.0f);
+    Vec3f diffuseColor2(1.0f, 0.0f, 0.0f);
+    Vec3f specularColor2(1.0f, 1.0f, 1.0f);
+    float shininess2 =  50.0f;
+    Material* material2 = new Material(ambientColor2, diffuseColor2, specularColor2, shininess2);
+
+    sphere1->setMaterial(*material1);
+    sphere2->setMaterial(*material1);
+    sphere3->setMaterial(*material2);
+    sphere4->setMaterial(*material2);
 
     ///Camera variables
     Camera* camera = new Camera(Vec3f(0.0f, 0.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f), Vec3f(0.0f, 1.0f, 0.0f), 1.0f, 100.0f, WIDTH, HEIGHT, 0.785f);
@@ -73,6 +87,7 @@ int main()
     Scene* s = new Scene(raytracables, lights);
     s->setCamera(camera);
     s->addObject(sphere3);
+    s->addObject(sphere4);
     s->trace();
 
 }
